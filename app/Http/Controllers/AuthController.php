@@ -12,14 +12,13 @@ class AuthController extends Controller
     public function register(Request $request){
         $validator = Validator::make($request->all(),[
             'name'=>'required',
-            'email'=>'required|email',
-            'password'=>'required'
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' =>'required|confirmed',
         ]);
         
         if($validator->fails()){
             return response()->json(['status_code'=>400, 'message'=>"Bad Request"]);
         }
-        echo "Hi";
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
