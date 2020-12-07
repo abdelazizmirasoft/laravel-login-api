@@ -9,6 +9,7 @@ use Auth;
 
 class AuthController extends Controller
 {
+    
     public function register(Request $request){
         $validator = Validator::make($request->all(),[
             'name'=>'required',
@@ -27,7 +28,8 @@ class AuthController extends Controller
 
         return response()->json([
             'status_code'=>200,
-            'message'=>"User created succesfully"
+            'message'=>"created",
+            'status'=>"created"
         ]);
     }
     public function login(Request $request){
@@ -51,7 +53,10 @@ class AuthController extends Controller
 
         return response()->json([
             'status_code'=>200,
-            'token'=>$tokenResult
+            'token'=>$tokenResult,
+            'status'=>"created",
+            'logged_in'=>true
+            
         ]);
     }
 
@@ -59,7 +64,22 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
         return response()->json([
             'status_code'=>200,
-            'message'=>"Token deleted successfully"
+            'message'=>"Token deleted successfully",
+            
+        ]);
+    }
+
+    public function logged_in(Request $request){
+        
+        $user = Auth::user();
+        if (auth('sanctum')->user()!=null) {
+            return response()->json([
+                'logged_in'=>true,
+                'user'=>auth('sanctum')->user()
+            ]);
+        }
+        return response()->json([
+            'logged in'=>false
         ]);
     }
 }
